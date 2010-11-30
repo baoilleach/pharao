@@ -1,0 +1,2 @@
+- Compilation and installation instructions are described in the 'INSTALL.txt' file.
+- Documentation on the use of PHARAO is available in the doc/ directory.
