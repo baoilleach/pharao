@@ -25,9 +25,14 @@ GNU General Public License for more details.
 
 // General
 #include <list>
-#include <getopt.h>
 #include <stdlib.h>
 #include <map>
+
+#ifdef WIN32
+#include "getopt.h"
+#else
+#include <unistd.h>  // For the getopt() function
+#endif
 
 // OpenBabel
 

@@ -60,7 +60,11 @@ PharMerger pharMerger;
 int main(int argc, char* argv[])
 {  
    // Initialise random number generator
-	srandom(time(NULL));
+#ifdef _MSC_VER
+	srand(static_cast<unsigned int> (time(NULL)));
+#else
+  srandom(time(NULL));
+#endif
 	clock_t t0 = clock();
    
    // Print header

@@ -20,8 +20,6 @@ GNU General Public License for more details.
 
 #include "alignment.h"
 
-
-
 Alignment::Alignment(PharmacophoreMap& fMap) :
 	_refMap(),
 	_dbMap(),
@@ -400,10 +398,11 @@ Alignment::align(bool n)
 
 			// stop iterations if the increase in volume overlap is too small (gradient ascent)
 			// or if the volume is not defined
-			if (std::isnan(volume) || (volume - oldVolume < 1e-5))
-         {
-				break; 
-         }
+#ifdef _MSC_VER
+			if (_isnan(volume) || (volume - oldVolume < 1e-5)) break;
+#else
+      if (std::isnan(volume) || (volume - oldVolume < 1e-5)) break;
+#endif
 			
 			// reset old volume	
 			oldVolume = volume;

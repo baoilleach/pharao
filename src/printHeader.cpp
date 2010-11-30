@@ -29,7 +29,11 @@ printHeader()
 	std::cerr << "  PHARAO v" << PHARAO_VERSION << "." << PHARAO_RELEASE << "." << PHARAO_SUBRELEASE << " | ";
    std::cerr << __DATE__ " " << __TIME__ << std::endl;
 	std::cerr << std::endl;
-	std::cerr << "  -> GCC:         " << __VERSION__ << std::endl;
+#ifdef _MSC_VER
+	std::cerr << "  -> MSVC:         " << _MSC_VER << std::endl;
+#else
+  std::cerr << "  -> GCC:         " << __VERSION__ << std::endl;
+#endif
 	std::cerr << "  -> Open Babel:  " << BABEL_VERSION << std::endl;
 	std::cerr << std::endl;
 	std::cerr << "  Copyright (C) 2005-2010 by Silicos NV (http://www.silicos.com)" << std::endl;

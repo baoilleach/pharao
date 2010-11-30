@@ -49,6 +49,7 @@ set (sources     ${PharaoDir}/main.cpp
                  ${PharaoDir}/solutionInfo.cpp
                  ${PharaoDir}/stringTokenizer.cpp
                  ${PharaoDir}/utilities.cpp
+		 ${PharaoDir}/getopt.c
 )
 
 # Include files from pharao project
