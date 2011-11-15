@@ -1,0 +1,1 @@
+"C:\Program Files (x86)\CMake 2.8"\bin\cmake ..\repo -G "Visual Studio 9 2008" -DOPENBABEL2_INCLUDE_DIR=C:\Tools\openbabel\trunk\include;C:\Tools\openbabel\trunk\windows-vc2008\build\include -DOPENBABEL2_LIBRARIES=C:\Tools\openbabel\trunk\windows-vc2008\build\src\Release\openbabel-2.lib
