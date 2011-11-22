@@ -71,7 +71,8 @@ int main(int argc, char* argv[])
    printHeader();
 	
 	// Read options
-   Options uo = parseCommandLine(argc,argv);
+   Options uo;
+   parseCommandLine(argc,argv,uo);
    if(!uo.noHybrid)
    {
       if(uo.funcGroupVec[AROM] && uo.funcGroupVec[LIPO])

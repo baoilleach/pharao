@@ -46,7 +46,7 @@ GNU General Public License for more details.
 
 
 
-Options parseCommandLine(int argc, char* argv[]);
+void parseCommandLine(int argc, char* argv[], Options &o);
 
 
 

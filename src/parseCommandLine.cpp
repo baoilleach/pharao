@@ -22,8 +22,8 @@ GNU General Public License for more details.
 
 
 
-Options
-parseCommandLine(int argc, char* argv[])
+void
+parseCommandLine(int argc, char* argv[], Options &o)
 {
    static struct option Arguments[] =
    {
@@ -50,8 +50,6 @@ parseCommandLine(int argc, char* argv[])
 		{ "scoreOnly",         no_argument,         NULL,    11 },
       { NULL,                0,                   NULL,    0  }
    };
-	
-	Options o;
 	
 	// Set defaults
 	o.dbInpFile.clear();
@@ -327,5 +325,5 @@ parseCommandLine(int argc, char* argv[])
    
 	argc -= optind;
 	argv += optind;
-	return o;
+	return;
 }
