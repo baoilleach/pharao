@@ -112,7 +112,7 @@ _hAccCalcAccSurf(OpenBabel::OBAtom* atom)
          double distSq(((itS->x - n->x()) * (itS->x - n->x())) +
                        ((itS->y - n->y()) * (itS->y - n->y())) +
                        ((itS->z - n->z()) * (itS->z - n->z())));
-         radius = et.GetVdwRad(n->GetAtomicNum());
+         r = et.GetVdwRad(n->GetAtomicNum());
          double sumSq((r + H_RADIUS) * (r + H_RADIUS));
       
          if (distSq <= sumSq)
