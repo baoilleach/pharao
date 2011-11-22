@@ -38,7 +38,7 @@ GNU General Public License for more details.
 
 
 
-#ifndef ROUND(x)
+#ifndef ROUND
 #define ROUND(x)      ((int) ((x) + 0.5))
 #endif
 
