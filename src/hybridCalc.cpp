@@ -54,7 +54,7 @@ hybridCalc(OpenBabel::OBMol* m, Pharmacophore* pharmacophore)
                      itP->normal.z = 0.0;
               
                      // remove second point
-                     pharmacophore->erase(itP2);
+                     itP2 = pharmacophore->erase(itP2);
                      --itP2;
                   }
                }
@@ -99,7 +99,7 @@ hybridCalc(OpenBabel::OBMol* m, Pharmacophore* pharmacophore)
                   itP->normal.z += itP->point.z;
                                                     
                   //remove second point
-                  pharmacophore->erase(itP2);
+                  itP2 = pharmacophore->erase(itP2);
                   --itP2;
                }
             }
@@ -145,7 +145,7 @@ hybridCalc(OpenBabel::OBMol* m, Pharmacophore* pharmacophore)
                      itP->normal.z += itP->point.z;
                                                     
                      //remove second point
-                     pharmacophore->erase(itP2);
+                     itP2 = pharmacophore->erase(itP2);
                      --itP2;
                   }
                }
