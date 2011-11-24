@@ -348,7 +348,7 @@ _lipoGroupAtoms(OpenBabel::OBMol* m, Pharmacophore* pharmacophore)
    // Group atoms with three or more bonds
    for (itS = atomSet.begin(); itS != atomSet.end(); ++itS)
    {
-      if (((*itS)->GetImplicitValence() - (*itS)->GetHvyValence()) > 2)
+            if ((*itS)->GetHvyValence() > 2)
       {
          std::list<OpenBabel::OBAtom*> aList;
          aList.push_back(*itS);
@@ -362,7 +362,7 @@ _lipoGroupAtoms(OpenBabel::OBMol* m, Pharmacophore* pharmacophore)
          for (OpenBabel::OBBond* b = (*itS)->BeginBond(bi); b; b = (*itS)->NextBond(bi))
          {
             OpenBabel::OBAtom* a = b->GetNbrAtom(*itS);
-            if (((a->GetImplicitValence() - a->GetHvyValence()) == 1) && (a->GetAtomicNum() != 1))
+            if (a->GetHvyValence() == 1 && a->GetAtomicNum() != 1)
             {
                double lipo(a->GetPartialCharge());
                lipoSum += lipo;
