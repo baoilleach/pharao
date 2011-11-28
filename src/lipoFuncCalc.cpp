@@ -283,7 +283,9 @@ _lipoCalcAccSurf(OpenBabel::OBAtom* a)
    return f * 4 * PI * radius*radius;
 }
   
-
+bool HasZeroLipo(OpenBabel::OBAtom* atom) {
+   return (atom->GetPartialCharge() == 0.0);
+}
 
 void 
 _lipoGroupAtoms(OpenBabel::OBMol* m, Pharmacophore* pharmacophore)
@@ -346,12 +348,12 @@ _lipoGroupAtoms(OpenBabel::OBMol* m, Pharmacophore* pharmacophore)
    }
   
    // Group atoms with three or more bonds
+   std::vector<OpenBabel::OBAtom*> removeAtoms;
    for (itS = atomSet.begin(); itS != atomSet.end(); ++itS)
    {
             if ((*itS)->GetHvyValence() > 2)
       {
-         std::list<OpenBabel::OBAtom*> aList;
-         aList.push_back(*itS);
+         removeAtoms.push_back(*itS);
          double lipoSum((*itS)->GetPartialCharge());
          Coordinate center;
          center.x += lipoSum * (*itS)->x();
@@ -366,7 +368,7 @@ _lipoGroupAtoms(OpenBabel::OBMol* m, Pharmacophore* pharmacophore)
             {
                double lipo(a->GetPartialCharge());
                lipoSum += lipo;
-               aList.push_back(a);
+               removeAtoms.push_back(a);
                center.x += (lipo * a->x());
                center.y += (lipo * a->y());
                center.z += (lipo * a->z());
@@ -390,6 +392,89 @@ _lipoGroupAtoms(OpenBabel::OBMol* m, Pharmacophore* pharmacophore)
          }
       }
    }
+
+   for (std::vector<OpenBabel::OBAtom*>::const_iterator itV = removeAtoms.begin(); itV != removeAtoms.end(); ++itV)
+      atomSet.erase(*itV);
+
+   // **********************************
+   // Divide remaining atoms into chains
+   // **********************************
+
+   std::set<OpenBabel::OBAtom*> natomSet;
+   std::remove_copy_if(atomSet.begin(), atomSet.end(), std::inserter(natomSet, natomSet.begin()), HasZeroLipo);
+   
+   OpenBabel::OBBitVec seen(m->NumAtoms() + 1);
+   for (itS = natomSet.begin(); itS != natomSet.end(); ++itS)
+   {
+      if (seen.BitIsSet((*itS)->GetIdx())) continue; // already seen
+      
+      // Only continue if this is a chain terminus
+      char chain_nbrs = 0;
+      FOR_NBORS_OF_ATOM(nbr, *itS)
+         if (natomSet.find(&*nbr) != natomSet.end()) chain_nbrs++;
+      if (chain_nbrs > 1)
+         continue;
+
+      // Initialisation
+      OpenBabel::OBAtom* atom = *itS;
+      double lipoSum = 0.0;
+      Coordinate center;
+      std::vector<OpenBabel::OBAtom*> oneBond;
+
+      while(true)
+      {
+         if (atom == NULL || (lipoSum + atom->GetPartialCharge()) > 2*REF_LIPO)
+         {  // Store this pharmacophore
+            PharmacophorePoint p;
+            p.func = LIPO;
+            p.hasNormal = false;
+            p.normal.x = 0.0;
+            p.normal.y = 0.0;
+            p.normal.z = 0.0;
+				p.alpha = funcSigma[LIPO];
+            if (oneBond.size() == 1)
+            {
+               center.x = oneBond.at(0)->x();
+               center.y = oneBond.at(0)->y();
+               center.z = oneBond.at(0)->z();
+            }
+            else
+            {
+               center.x /= lipoSum;
+               center.y /= lipoSum;
+               center.z /= lipoSum;
+            }
+            p.point = center;
+            pharmacophore->push_back(p);
+            if (atom == NULL) break;
+
+            // Reset initialisation
+            lipoSum = 0.0;
+            center.x = center.y = center.z = 0;
+            oneBond.clear();
+         }
+         
+         double lipo = atom->GetPartialCharge();
+         lipoSum += lipo;
+         seen.SetBitOn(atom->GetIdx());
+         center.x += (lipo * atom->x());
+         center.y += (lipo * atom->y());
+         center.z += (lipo * atom->z());
+         if (atom->GetHvyValence() == 1)
+            oneBond.push_back(atom);
+
+         // Move to the next atom along the chain or NULL
+         OpenBabel::OBAtom* next_atom = NULL;
+         FOR_NBORS_OF_ATOM(nbr, atom)
+            if (natomSet.find(&*nbr) != natomSet.end() && !seen.BitIsSet(nbr->GetIdx()))
+            {
+               next_atom = &*nbr;
+               break;
+            }
+         atom = next_atom;        
+      }
+   }
+
 }
 
 
