@@ -47,11 +47,23 @@ GNU General Public License for more details.
 #include "alignment.h"
 #include "functionMapping.h"
 
-
-
 //*--------------------------------------------------------------------------*//
 PharMerger pharMerger;
 
+void writeResult(Result &res, Options &uo) {
+   if (!uo.molOutFile.empty())
+   { 
+      logOut(&res, uo);
+   }
+   if (!uo.pharmOutFile.empty())
+   {
+      logPharmacophores(&res, uo);
+   }
+   if (!uo.scoreOutFile.empty())
+   {
+      logScores(&res, uo);
+   }
+}
 
 
 //*--------------------------------------------------------------------------*//
@@ -270,6 +282,9 @@ int main(int argc, char* argv[])
 
    bool done(false);
    OpenBabel::OBMol m;
+   std::string oldTitle = "";
+   Result bestConf;
+   bestConf.rankbyScore = -9999;
    while (!done)
    {	
       dbPharm.clear();
@@ -567,25 +582,42 @@ int main(int argc, char* argv[])
          }
       }
 
-      if (uo.best != 0)
+      if (uo.singleConf)
       {
-         addBest(res, uo, resList);
+         if (res.resMol.GetTitle() == oldTitle)
+         {
+            if (res.rankbyScore > bestConf.rankbyScore)
+               bestConf = res;
+         }
+         else
+         {
+            if (bestConf.rankbyScore != -9999) // On the first iteration
+            {
+               if (uo.best != 0)
+                  addBest(bestConf, uo, resList);
+               else
+                  writeResult(bestConf, uo);
+            }
+            oldTitle = res.resMol.GetTitle();
+            bestConf = res;
+         }
       }
       else 
-      { 
-         if (!uo.molOutFile.empty())
-         { 
-            logOut(&res, uo);
-         }
-         if (!uo.pharmOutFile.empty())
-         {
-            logPharmacophores(&res, uo);
-         }
-         if (!uo.scoreOutFile.empty())
-         {
-            logScores(&res, uo);
-         }
+      {
+         if (uo.best != 0)
+            addBest(res, uo, resList);
+         else 
+            writeResult(res, uo);
       }
+   }
+
+   // Tidy up
+   if (uo.singleConf)
+   {
+      if (uo.best != 0)
+         addBest(bestConf, uo, resList);
+      else
+            writeResult(bestConf, uo);
    }
 
    if (molReader)
@@ -608,20 +640,8 @@ int main(int argc, char* argv[])
       std::vector<Result*>::iterator itR;
       for (itR = resList.begin(); itR != resList.end(); ++itR) 
       {
-         Result* res(*itR);
-         if (!uo.molOutFile.empty())
-         {
-            logOut(res, uo);
-         }
-         if (!uo.pharmOutFile.empty())
-         {
-            logPharmacophores(res, uo);
-         }
-         if (!uo.scoreOutFile.empty())
-         {
-            logScores(res, uo);
-         }
-         delete res;
+         writeResult(**itR, uo);
+         delete *itR;
       }
    }
 

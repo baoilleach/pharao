@@ -48,6 +48,7 @@ parseCommandLine(int argc, char* argv[], Options &o)
       { "info",              required_argument,   NULL,    9  },
 		{ "withExclusion",     no_argument,         NULL,    10 },
 		{ "scoreOnly",         no_argument,         NULL,    11 },
+      { "singleConf",        no_argument,         NULL,    12 },
       { NULL,                0,                   NULL,    0  }
    };
 	
@@ -94,6 +95,7 @@ parseCommandLine(int argc, char* argv[], Options &o)
 	o.withExclusion = false;
 	o.scoreOnly = false;
 	o.version = false;
+   o.singleConf = false;
 	
 	int choice;
 	opterr = 0;
@@ -307,7 +309,11 @@ parseCommandLine(int argc, char* argv[], Options &o)
          case 11: //...................................................scoreOnly
 				o.scoreOnly = true;
             break;
-            
+
+         case 12: //...................................................singleConf
+				o.singleConf = true;
+            break;
+
          case 'q': //......................................................quiet
             o.isQuiet = true;
             break;

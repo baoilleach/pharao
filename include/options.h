@@ -65,6 +65,7 @@ class Options
       double                  cutOff;           //      --cutOff
       int                     best;             //      --best
       RankType                rankby;           //      --rankby
+      bool                    singleConf;       //      --singleConf
   
       std::vector<bool>       funcGroupVec;     //  -f  --funcGroup
       bool                    noHybrid;         //      --noHybrid

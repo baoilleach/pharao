@@ -28,6 +28,7 @@ Options::Options():
    rankby(TANIMOTO),
    funcGroupVec(),
 	noHybrid(false),
+   singleConf(false),
    epsilon(0.5),
    withExclusion(false), 
    merge(false),
@@ -216,6 +217,7 @@ Options::print(void) const
    os << "  -> With exclusion:    " << (withExclusion ? "yes" : "no") << std::endl;
    os << "  -> Scores only:       " << (scoreOnly ? "yes" : "no") << std::endl;
    os << "  -> Quied mode:        " << (isQuiet ? "yes" : "no") << std::endl;
+   os << "  -> Single conformer:  " << (singleConf ? "yes" : "no") << std::endl;
    
    os << std::endl;   
    std::string r = os.str();

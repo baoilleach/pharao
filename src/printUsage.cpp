@@ -56,6 +56,7 @@ printUsage()
    std::cerr << "      --noHybrid" << std::endl;
    std::cerr << "      --withExclusion" << std::endl;
    std::cerr << "      --scoreOnly" << std::endl;
+   std::cerr << "      --singleConf" << std::endl;
    std::cerr << std::endl;
    std::cerr << "GENERAL OPTIONS: " << std::endl;
    std::cerr << std::endl;
