@@ -19,7 +19,7 @@ GNU General Public License for more details.
 
 
 #include "lipoFuncCalc.h"
-
+using OpenBabel::OBAtomAtomIter;
 
 
 void
@@ -45,6 +45,7 @@ lipoFuncCalc(OpenBabel::OBMol* m, Pharmacophore* pharmacophore)
          continue;
       }
       double t = a->GetPartialCharge();
+//      std::cout << a->GetIdx() << " " << t << " " << _lipoCalcAccSurf(a) << " " << _lipoCalcAccSurf(a) * t << "\n";
       if (t != 0.0)
       {
          a->SetPartialCharge(_lipoCalcAccSurf(a) * t);
@@ -420,10 +421,11 @@ _lipoGroupAtoms(OpenBabel::OBMol* m, Pharmacophore* pharmacophore)
       double lipoSum = 0.0;
       Coordinate center;
       std::vector<OpenBabel::OBAtom*> oneBond;
+      bool first_pass = true;
 
       while(true)
       {
-         if (atom == NULL || (lipoSum + atom->GetPartialCharge()) > 2*REF_LIPO)
+         if (atom == NULL || ((!first_pass) && (lipoSum + atom->GetPartialCharge()) > 2*REF_LIPO))
          {  // Store this pharmacophore
             PharmacophorePoint p;
             p.func = LIPO;
@@ -453,7 +455,8 @@ _lipoGroupAtoms(OpenBabel::OBMol* m, Pharmacophore* pharmacophore)
             center.x = center.y = center.z = 0;
             oneBond.clear();
          }
-         
+
+         first_pass = false;
          double lipo = atom->GetPartialCharge();
          lipoSum += lipo;
          seen.SetBitOn(atom->GetIdx());
